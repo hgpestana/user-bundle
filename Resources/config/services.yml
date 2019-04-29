@@ -1,0 +1,4 @@
+services:
+#    hg_pestana_user.example:
+#        class: HGPestana\UserBundle\Example
+#        arguments: ["@service_id", "plain_value", "%parameter%"]
