@@ -1,0 +1,64 @@
+imports:
+- { resource: security.yml }
+
+framework:
+  csrf_protection: ~
+  secret: test
+  test: ~
+  templating:
+    engines: ['twig']
+  session:
+    handler_id: ~
+    storage_id: session.storage.mock_file
+    name: MOCKSESSID
+  router:
+    resource: '%kernel.root_dir%/config/routing.yml'
+    strict_requirements: ~
+  validation: { enable_annotations: true }
+
+liip_functional_test:
+  cache_sqlite_db: true
+
+doctrine:
+  dbal:
+    default_connection: default
+    connections:
+      default:
+        driver: pdo_sqlite
+        path: "%kernel.cache_dir%/user-bundle.db"
+  orm:
+    auto_generate_proxy_classes: '%kernel.debug%'
+    naming_strategy: doctrine.orm.naming_strategy.underscore
+    auto_mapping: true
+
+fos_user:
+  db_driver: orm # other valid values are 'mongodb' and 'couchdb'
+  firewall_name: main
+  user_class: HGPestana\UserBundle\Entity\User
+  service:
+    mailer: 'fos_user.mailer.noop'
+  from_email:
+    address: "test@domain.com"
+    sender_name: "test@domain.com"
+
+fos_rest:
+  param_fetcher_listener: true
+  body_listener: true
+  format_listener: true
+  view:
+    view_response_listener: 'force'
+    formats:
+      xml: true
+      json: true
+    templating_formats:
+      html: true
+    force_redirects:
+      html: true
+    failed_validation: HTTP_BAD_REQUEST
+    default_engine: twig
+  routing_loader:
+    include_format: false
+    default_format: json
+  serializer:
+    serialize_null: true
+    groups: [Default,api]

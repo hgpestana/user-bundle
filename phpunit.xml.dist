@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit bootstrap="./vendor/autoload.php"
+         backupGlobals="false"
+         backupStaticAttributes="false"
+         colors="true"
+         verbose="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         stopOnFailure="false">
+    <php>
+        <ini name="error_reporting" value="-1"/>
+        <server name="KERNEL_DIR" value="./Tests/Fixtures/app"/>
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/>
+    </php>
+
+    <logging>
+        <log type="coverage-clover" target="clover.xml"/>
+    </logging>
+
+    <testsuites>
+        <testsuite name="User Bundle Test Suite">
+            <directory suffix="Test.php">./Tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">./</directory>
+            <exclude>
+                <directory>./Resources/</directory>
+                <directory>./vendor</directory>
+                <directory>./Tests</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+</phpunit>
