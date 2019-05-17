@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Standard api token entity
  *
  * @ORM\HasLifecycleCallbacks
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="HGPestana\UserBundle\Repository\ApiTokenRepository")
  * @ORM\Table(name="user_api_token")
  */
 class ApiToken
@@ -144,6 +144,11 @@ class ApiToken
         return $this;
     }
 
+    /**
+     * Get's the immutable flag
+     *
+     * @return bool
+     */
     public function getImmutable(): bool
     {
         return $this->immutable;
@@ -159,6 +164,17 @@ class ApiToken
     {
         $this->expiresAt = new DateTime('-1 year');
         return $this;
+    }
+
+    /**
+     * Checks if a token has expired
+     *
+     * @return bool
+     * @throws \Exception
+     */
+    public function isExpired(): bool
+    {
+        return $this->getExpiresAt() <= new \DateTime();
     }
 
 }

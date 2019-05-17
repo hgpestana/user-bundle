@@ -13,7 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Standard user authentication entity
  *
  * @ORM\HasLifecycleCallbacks
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="HGPestana\UserBundle\Repository\UserRepository")
  * @ORM\Table(name="user")
  */
 class User implements AdvancedUserInterface, Serializable
