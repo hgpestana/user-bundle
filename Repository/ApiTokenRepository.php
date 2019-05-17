@@ -4,7 +4,9 @@
 namespace HGPestana\UserBundle\Repository;
 
 
-class ApiTokenRepository
+use Doctrine\ORM\EntityRepository;
+
+class ApiTokenRepository extends EntityRepository
 {
 
 }
