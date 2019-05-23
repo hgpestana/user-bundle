@@ -1,11 +1,19 @@
 <?php
 
+/*
+ * This file is part of hgpestana's user bundle.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace HGPestana\UserBundle\Security\Core\Authentication;
 
 
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
+use Exception;
 use HGPestana\UserBundle\Entity\ApiToken;
 use HGPestana\UserBundle\Entity\User;
 use HGPestana\UserBundle\Repository\UserRepository;
@@ -13,27 +21,43 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 
+/**
+ * Responsible for providing basic authentication using username and password stored
+ * in the user entity in the bundle
+ *
+ * @author Hélder Pestana <hgpestana@gmail.com>
+ */
 class BasicAuthenticator extends AbstractGuardAuthenticator
 {
     private const INVALID_CREDENTIALS_ERROR = 'Invalid credentials supplied! Please try again.';
-    private const PLATFORM_KEY = 'PLATFORM';
     private const API_KEY = 'api_key';
     private const MESSAGE_KEY = 'message';
 
     /** @var UserRepository */
     private $userRepository;
 
-    public function __construct(UserRepository $userRepository)
+    /** @var UserPasswordEncoderInterface */
+    private $passwordEncoder;
+
+    /**
+     * {@inheritDoc}
+     */
+    public function __construct(UserRepository $userRepository, UserPasswordEncoderInterface $passwordEncoder)
     {
         $this->userRepository = $userRepository;
+        $this->passwordEncoder = $passwordEncoder;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function supports(Request $request): bool
     {
         // look for header "Authorization: Basic <64bit encoded keypair>"
@@ -41,13 +65,17 @@ class BasicAuthenticator extends AbstractGuardAuthenticator
             && 0 === strpos($request->headers->get('Authorization'), 'Basic ');
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getCredentials(Request $request): ?array
     {
         $credentialsHeader = $request->headers->get('Authorization');
-        $credentials = explode(":", base64_decode($credentialsHeader, 6));
+        $credentials = explode(':', base64_decode($credentialsHeader, 6));
 
-        if (count($credentials) != 2)
+        if (count($credentials) !== 2) {
             throw new CustomUserMessageAuthenticationException(self::INVALID_CREDENTIALS_ERROR);
+        }
 
         return [
             'email' => $credentials[0],
@@ -55,31 +83,38 @@ class BasicAuthenticator extends AbstractGuardAuthenticator
         ];
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getUser($credentials, UserProviderInterface $userProvider): ?User
     {
         /** @var User $user */
         $user = $this->userRepository->findOneByEmail($credentials['email']);
 
-        if (!$user)
+        if (!$user) {
             throw new CustomUserMessageAuthenticationException(self::INVALID_CREDENTIALS_ERROR);
+        }
 
         return $user;
     }
 
-    public function checkCredentials($credentials, UserInterface $user)
+    /**
+     * {@inheritDoc}
+     */
+    public function checkCredentials($credentials, UserInterface $user): bool
     {
-        // TODO: Implement checkCredentials() method.
+        return $this->passwordEncoder->isPasswordValid($user, $credentials['password']);
     }
 
     /**
      * Returns a JsonResponse with a valid platform API token for the logged in user
      *
-     * @param Request $request
+     * @param Request        $request
      * @param TokenInterface $token
-     * @param string $providerKey
+     * @param string         $providerKey
      *
      * @return JsonResponse
-     * @throws \Exception
+     * @throws Exception
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey): JsonResponse
     {
@@ -87,7 +122,7 @@ class BasicAuthenticator extends AbstractGuardAuthenticator
         $user = $token->getUser();
         $results = $this->getUserValidPlatformTokens($user);
 
-        if ($results->count() > 0) {
+        if ($results !== null && $results->count() > 0) {
 
             /** @var ApiToken $token */
             $token = $results->first();
@@ -100,7 +135,7 @@ class BasicAuthenticator extends AbstractGuardAuthenticator
 
         return new JsonResponse(
             [
-                self::API_KEY => $token->getToken()
+                self::API_KEY => $token->getToken(),
             ],
             Response::HTTP_OK
         );
@@ -112,13 +147,13 @@ class BasicAuthenticator extends AbstractGuardAuthenticator
      * @param User $user
      *
      * @return ArrayCollection|null
-     * @throws \Exception
+     * @throws Exception
      */
     private function getUserValidPlatformTokens(User $user): ?ArrayCollection
     {
         $criteria = Criteria::create()
-            ->where(Criteria::expr()->eq('description', self::PLATFORM_KEY))
-            ->andWhere(Criteria::expr()->gte('expiresAt', new \DateTime()));
+            ->where(Criteria::expr()->eq('description', ApiToken::PLATFORM_KEY))
+            ->andWhere(Criteria::expr()->gte('expiresAt', new DateTime()));
 
         return $user->getApiTokens()->matching($criteria);
     }
@@ -129,13 +164,12 @@ class BasicAuthenticator extends AbstractGuardAuthenticator
      * @param User $user
      *
      * @return ApiToken|null
+     * @throws Exception
      */
     private function generateValidPlatformToken(User $user): ?ApiToken
     {
-        $token = new ApiToken($user, self::PLATFORM_KEY, true);
-
+        $token = new ApiToken($user, ApiToken::PLATFORM_KEY, true);
         $user->getApiTokens()->add($token);
-
         $this->userRepository->save($user);
 
         return $token;
@@ -144,7 +178,7 @@ class BasicAuthenticator extends AbstractGuardAuthenticator
     /**
      * Returns a JsonResponse with an error message
      *
-     * @param Request $request
+     * @param Request                 $request
      * @param AuthenticationException $exception
      *
      * @return JsonResponse
@@ -152,17 +186,22 @@ class BasicAuthenticator extends AbstractGuardAuthenticator
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): JsonResponse
     {
         return new JsonResponse([
-            self::MESSAGE_KEY => $exception->getMessageKey()
+            self::MESSAGE_KEY => $exception->getMessageKey(),
         ], 401);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function supportsRememberMe(): bool
     {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function start(Request $request, AuthenticationException $authException = null)
     {
-        // TODO: Implement start() method.
     }
 }
