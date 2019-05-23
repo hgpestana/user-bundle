@@ -1,13 +1,23 @@
 <?php
 
+/*
+ * This file is part of hgpestana's user bundle.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 
 namespace HGPestana\UserBundle\Entity;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Exception;
 
 /**
  * Standard api token entity
+ *
+ * @author Hélder Pestana <hgpestana@gmail.com>
  *
  * @ORM\HasLifecycleCallbacks
  * @ORM\Entity(repositoryClass="HGPestana\UserBundle\Repository\ApiTokenRepository")
@@ -15,6 +25,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ApiToken
 {
+
+    public const PLATFORM_KEY = 'PLATFORM';
 
     /**
      * @var string
@@ -55,6 +67,15 @@ class ApiToken
      */
     private $user;
 
+    /**
+     * ApiToken constructor.
+     *
+     * @param User   $user
+     * @param string $description
+     * @param bool   $immutable
+     *
+     * @throws Exception
+     */
     public function __construct(User $user, string $description, bool $immutable = false)
     {
         $this->token = bin2hex(random_bytes(60));
@@ -85,31 +106,6 @@ class ApiToken
     }
 
     /**
-     * Get's the token's expiration datetime
-     *
-     * @return DateTime
-     */
-    public function getExpiresAt(): DateTime
-    {
-        return $this->expiresAt;
-    }
-
-    /**
-     * Set's the token's expiration datetime
-     *
-     * @param DateTime $expiresAt
-     * @return ApiToken
-     */
-    public function setExpiresAt(DateTime $expiresAt): self
-    {
-        if (!$this->immutable) {
-            $this->expiresAt = $expiresAt;
-        }
-
-        return $this;
-    }
-
-    /**
      * Get's the token's user
      *
      * @return User
@@ -133,6 +129,7 @@ class ApiToken
      * Set's the token's description
      *
      * @param string $description
+     *
      * @return ApiToken
      */
     public function setDescription(string $description): self
@@ -158,7 +155,7 @@ class ApiToken
      * Invalidates a token
      *
      * @return ApiToken
-     * @throws \Exception
+     * @throws Exception
      */
     public function invalidateKey(): self
     {
@@ -170,11 +167,37 @@ class ApiToken
      * Checks if a token has expired
      *
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     public function isExpired(): bool
     {
-        return $this->getExpiresAt() <= new \DateTime();
+        return $this->getExpiresAt() <= new DateTime();
+    }
+
+    /**
+     * Get's the token's expiration datetime
+     *
+     * @return DateTime
+     */
+    public function getExpiresAt(): DateTime
+    {
+        return $this->expiresAt;
+    }
+
+    /**
+     * Set's the token's expiration datetime
+     *
+     * @param DateTime $expiresAt
+     *
+     * @return ApiToken
+     */
+    public function setExpiresAt(DateTime $expiresAt): self
+    {
+        if (!$this->immutable) {
+            $this->expiresAt = $expiresAt;
+        }
+
+        return $this;
     }
 
 }

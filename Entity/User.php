@@ -1,10 +1,18 @@
 <?php
 
+/*
+ * This file is part of hgpestana's user bundle.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace HGPestana\UserBundle\Entity;
 
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Exception;
 use Serializable;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -12,14 +20,16 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Standard user authentication entity
  *
+ * @author Hélder Pestana <hgpestana@gmail.com>
+ *
  * @ORM\HasLifecycleCallbacks
  * @ORM\Entity(repositoryClass="HGPestana\UserBundle\Repository\UserRepository")
  * @ORM\Table(name="user")
  */
 class User implements AdvancedUserInterface, Serializable
 {
-    const ROLE_DEFAULT = 'ROLE_USER';
-    const ROLE_SUPER_ADMIN = 'ROLE_SUPER_ADMIN';
+    public const ROLE_DEFAULT = 'ROLE_USER';
+    public const ROLE_SUPER_ADMIN = 'ROLE_SUPER_ADMIN';
 
     /**
      * @var string
@@ -111,6 +121,15 @@ class User implements AdvancedUserInterface, Serializable
      */
     private $apiTokens;
 
+    /**
+     * User constructor.
+     *
+     * @param string      $email
+     * @param string      $password
+     * @param string|null $salt
+     *
+     * @throws Exception
+     */
     public function __construct(string $email, string $password, string $salt = null)
     {
         $this->email = $email;
@@ -158,6 +177,7 @@ class User implements AdvancedUserInterface, Serializable
      * Enables the user
      *
      * @param bool $enabled
+     *
      * @return User
      */
     public function setEnabled(bool $enabled): self
@@ -178,6 +198,7 @@ class User implements AdvancedUserInterface, Serializable
      * Set's the user password. Must be encrypted and persisted.
      *
      * @param string $password
+     *
      * @return User
      */
     public function setPassword(string $password): self
@@ -198,6 +219,7 @@ class User implements AdvancedUserInterface, Serializable
      * Set's the salt, if required.
      *
      * @param string $salt
+     *
      * @return User
      */
     public function setSalt(string $salt): self
@@ -219,7 +241,6 @@ class User implements AdvancedUserInterface, Serializable
      */
     public function eraseCredentials(): void
     {
-        return;
     }
 
     /**
@@ -227,14 +248,14 @@ class User implements AdvancedUserInterface, Serializable
      */
     public function serialize(): ?string
     {
-        return serialize(array(
+        return serialize([
             $this->password,
             $this->salt,
             $this->enabled,
             $this->id,
             $this->email,
-            $this->emailCanonical
-        ));
+            $this->emailCanonical,
+        ]);
     }
 
     /**
@@ -243,14 +264,14 @@ class User implements AdvancedUserInterface, Serializable
     public function unserialize($serialized): void
     {
         $data = unserialize($serialized);
-        list(
+        [
             $this->password,
             $this->salt,
             $this->enabled,
             $this->id,
             $this->email,
-            $this->emailCanonical
-            ) = $data;
+            $this->emailCanonical,
+        ] = $data;
     }
 
     /**
@@ -282,6 +303,7 @@ class User implements AdvancedUserInterface, Serializable
      * Set's the last updated datetime
      *
      * @param DateTime $lastUpdated
+     *
      * @return User
      */
     private function setLastUpdated(DateTime $lastUpdated): self
@@ -304,6 +326,7 @@ class User implements AdvancedUserInterface, Serializable
      * Set's the created at datetime
      *
      * @param DateTime $createdAt
+     *
      * @return User
      */
     private function setCreatedAt(DateTime $createdAt): self
@@ -346,6 +369,7 @@ class User implements AdvancedUserInterface, Serializable
      * Set's the email
      *
      * @param string $email
+     *
      * @return User
      */
     public function setEmail(string $email): self
@@ -379,6 +403,7 @@ class User implements AdvancedUserInterface, Serializable
      * Set's the last login datetime
      *
      * @param DateTime $lastLogin
+     *
      * @return User
      */
     public function setLastLogin(Datetime $lastLogin): self
@@ -401,6 +426,7 @@ class User implements AdvancedUserInterface, Serializable
      * Set's the confirmation token
      *
      * @param string $confirmationToken
+     *
      * @return User
      */
     public function setConfirmationToken(string $confirmationToken): self
@@ -437,11 +463,12 @@ class User implements AdvancedUserInterface, Serializable
      * Set's the user roles
      *
      * @param array $roles
+     *
      * @return User
      */
     public function setRoles(array $roles): self
     {
-        $this->roles = array();
+        $this->roles = [];
         foreach ($roles as $role) {
             $this->addRole($role);
         }
@@ -452,6 +479,7 @@ class User implements AdvancedUserInterface, Serializable
      * Adds a role to the user
      *
      * @param string $role
+     *
      * @return User
      */
     public function addRole(string $role): self
@@ -470,6 +498,7 @@ class User implements AdvancedUserInterface, Serializable
      * Set's the username
      *
      * @param string $email
+     *
      * @return User
      */
     public function setUsername(string $email): self
@@ -503,6 +532,7 @@ class User implements AdvancedUserInterface, Serializable
      * Removes a user role
      *
      * @param string $role
+     *
      * @return User
      */
     public function removeRole(string $role): self
@@ -531,6 +561,7 @@ class User implements AdvancedUserInterface, Serializable
      * Set's the password modification request datetime
      *
      * @param DateTime $passwordRequestedAt
+     *
      * @return User
      */
     public function setPasswordRequestedAt(DateTime $passwordRequestedAt): self
@@ -543,6 +574,7 @@ class User implements AdvancedUserInterface, Serializable
      * Checks if the password modification request hasn't expired.
      *
      * @param $ttl
+     *
      * @return bool
      */
     public function isPasswordRequestNonExpired($ttl): bool
