@@ -1,34 +1,43 @@
 <?php
+declare(strict_types=1);
 
+/*
+ * This file is part of hgpestana's user bundle.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace HGPestana\UserBundle\Security\Core\Provider;
 
 
+use Doctrine\ORM\NonUniqueResultException;
 use HGPestana\UserBundle\Entity\User;
-use HGPestana\UserBundle\Repository\UserRepository;
+use HGPestana\UserBundle\Repository\RepositoryInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
-class UserApiProvider implements UserProviderInterface
+final class UserApiProvider implements UserProviderInterface
 {
 
-    /** @var UserRepository */
+    /** @var RepositoryInterface */
     private $repository;
 
     /**
      * UserProvider constructor.
      *
-     * @param UserRepository $repository
+     * @param RepositoryInterface $repository
      */
-    public function __construct(UserRepository $repository)
+    public function __construct(RepositoryInterface $repository)
     {
         $this->repository = $repository;
     }
 
     /**
      * {@inheritDoc}
+     * @throws NonUniqueResultException
      */
     public function loadUserByUsername($apiToken): User
     {
@@ -42,6 +51,7 @@ class UserApiProvider implements UserProviderInterface
      *
      * @return User
      * @throws UsernameNotFoundException
+     * @throws NonUniqueResultException
      */
     private function fetchUser(string $apiToken): User
     {
@@ -56,6 +66,7 @@ class UserApiProvider implements UserProviderInterface
 
     /**
      * {@inheritDoc}
+     * @throws NonUniqueResultException
      */
     public function refreshUser(UserInterface $user): User
     {

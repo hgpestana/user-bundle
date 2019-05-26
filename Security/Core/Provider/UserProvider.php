@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 /*
  * This file is part of hgpestana's user bundle.
@@ -11,24 +12,24 @@ namespace HGPestana\UserBundle\Security\Core\Provider;
 
 
 use HGPestana\UserBundle\Entity\User;
-use HGPestana\UserBundle\Repository\UserRepository;
+use HGPestana\UserBundle\Repository\RepositoryInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
-class UserProvider implements UserProviderInterface
+final class UserProvider implements UserProviderInterface
 {
 
-    /** @var UserRepository */
+    /** @var RepositoryInterface */
     private $repository;
 
     /**
      * UserProvider constructor.
      *
-     * @param UserRepository $repository
+     * @param RepositoryInterface $repository
      */
-    public function __construct(UserRepository $repository)
+    public function __construct(RepositoryInterface $repository)
     {
         $this->repository = $repository;
     }
