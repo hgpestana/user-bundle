@@ -19,11 +19,10 @@ use Exception;
  *
  * @author Hélder Pestana <hgpestana@gmail.com>
  *
- * @ORM\HasLifecycleCallbacks
  * @ORM\Entity
  * @ORM\Table(name="user_api_token")
  */
-class ApiToken
+final class ApiToken extends TimeProperties
 {
 
     public const PLATFORM_KEY = 'PLATFORM';

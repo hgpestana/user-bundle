@@ -22,11 +22,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @author Hélder Pestana <hgpestana@gmail.com>
  *
- * @ORM\HasLifecycleCallbacks
  * @ORM\Entity
  * @ORM\Table(name="user")
  */
-class User implements AdvancedUserInterface, Serializable
+final class User extends TimeProperties implements AdvancedUserInterface, Serializable
 {
     public const ROLE_DEFAULT = 'ROLE_USER';
     public const ROLE_SUPER_ADMIN = 'ROLE_SUPER_ADMIN';
