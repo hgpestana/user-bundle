@@ -18,12 +18,11 @@ use HGPestana\UserBundle\Entity\ApiToken;
 use InvalidArgumentException;
 
 /**
- * Abstract class ObjectRepository
+ * Abstract class that implements the common methods for repositories extending from it.
  *
  * @author Hélder Pestana <hgpestana@gmail.com>
- *
  */
-abstract class AbstractObjectRepository implements RepositoryInterface
+abstract class ObjectRepository implements RepositoryInterface
 {
 
     /** @var EntityManagerInterface */
