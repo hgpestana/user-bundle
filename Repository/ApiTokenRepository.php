@@ -11,11 +11,9 @@ declare(strict_types=1);
 namespace HGPestana\UserBundle\Repository;
 
 /**
- * Class ApiTokenRepository
+ * Repository class for the ApiToken entity.
  *
  * @author Hélder Pestana <hgpestana@gmail.com>
- *
- * @method findOneByToken(string $token)
  */
-final class ApiTokenRepository extends AbstractObjectRepository
+final class ApiTokenRepository extends ObjectRepository
 {}

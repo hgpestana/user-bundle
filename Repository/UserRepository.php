@@ -17,13 +17,11 @@ use HGPestana\UserBundle\Entity\ApiToken;
 use HGPestana\UserBundle\Entity\User;
 
 /**
- * Class UserRepository
+ * Repository class for the user entity.
  *
  * @author Hélder Pestana <hgpestana@gmail.com>
- *
- * @method findOneByEmail(string $email, array $orderBy = null)
  */
-final class UserRepository extends AbstractObjectRepository
+final class UserRepository extends ObjectRepository
 {
     /**
      * Returns a single user using the api token
