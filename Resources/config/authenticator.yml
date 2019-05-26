@@ -1,0 +1,15 @@
+parameters:
+  hgpestana.user.authenticator.basic.class: HGPestana\UserBundle\Security\Core\Authentication\BasicAuthenticator
+  hgpestana.user.authenticator.token.class: HGPestana\UserBundle\Security\Core\Authentication\ApiTokenAuthenticator
+
+services:
+  hgpestana.user.authenticator.basic:
+    class: '%hgpestana.user.authenticator.basic.class%'
+    arguments:
+      - '@hgpestana.user.repository.user'
+      - '@security.user_password_encoder.generic'
+
+  hgpestana.user.authenticator.token:
+    class: '%hgpestana.user.authenticator.token.class%'
+    arguments:
+      - '@hgpestana.user.repository.token'

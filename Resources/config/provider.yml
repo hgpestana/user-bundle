@@ -1,0 +1,14 @@
+parameters:
+  hgpestana.user.provider.class: HGPestana\UserBundle\Security\Core\Provider\UserProvider
+  hgpestana.user.api.provider.class: HGPestana\UserBundle\Security\Core\Provider\UserApiProvider
+
+services:
+  hgpestana.user.provider:
+    class: '%hgpestana.user.provider.class%'
+    arguments:
+      - '@hgpestana.user.repository.user'
+
+  hgpestana.user.api.provider:
+    class: '%hgpestana.user.api.provider.class%'
+    arguments:
+      - '@hgpestana.user.repository.token'

@@ -1,0 +1,18 @@
+parameters:
+  hgpestana.user.entity.user.class: HGPestana\UserBundle\Entity\User
+  hgpestana.user.entity.token.class: HGPestana\UserBundle\Entity\ApiToken
+  hgpestana.user.repository.user.class: HGPestana\UserBundle\Repository\UserRepository
+  hgpestana.user.repository.token.class: HGPestana\UserBundle\Repository\ApiTokenRepository
+
+services:
+  hgpestana.user.repository.user:
+    class: '%hgpestana.user.repository.user.class%'
+    arguments:
+      - '@doctrine.orm.entity_manager.abstract'
+      - '%hgpestana.user.entity.user.class%'
+
+  hgpestana.user.repository.token:
+    class: '%hgpestana.user.repository.token.class%'
+    arguments:
+      - '@doctrine.orm.entity_manager.abstract'
+      - '%hgpestana.user.entity.token.class%'
