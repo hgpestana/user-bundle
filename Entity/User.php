@@ -23,7 +23,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @author Hélder Pestana <hgpestana@gmail.com>
  *
  * @ORM\HasLifecycleCallbacks
- * @ORM\Entity(repositoryClass="HGPestana\UserBundle\Repository\UserRepository")
+ * @ORM\Entity
  * @ORM\Table(name="user")
  */
 class User implements AdvancedUserInterface, Serializable

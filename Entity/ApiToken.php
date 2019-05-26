@@ -20,7 +20,7 @@ use Exception;
  * @author Hélder Pestana <hgpestana@gmail.com>
  *
  * @ORM\HasLifecycleCallbacks
- * @ORM\Entity(repositoryClass="HGPestana\UserBundle\Repository\ApiTokenRepository")
+ * @ORM\Entity
  * @ORM\Table(name="user_api_token")
  */
 class ApiToken
