@@ -3,22 +3,24 @@
 security:
 
   encoders:
-    FOS\UserBundle\Model\UserInterface: bcrypt
+    HGPestana\UserBundle\Entity\User: bcrypt
 
   # http://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
   providers:
-    fos_userbundle:
-      id: fos_user.user_provider.username_email
+    user.provider:
+      id: hgpestana.user.provider
+    api.provider:
+      id: hgpestana.user.api.provider
 
   firewalls:
     main:
       pattern: ^/
-      form_login:
-        provider: fos_userbundle
-        csrf_token_generator: security.csrf.token_manager
-
-      logout:       true
-      anonymous:    true
+      stateless: true
+      anonymous: false
+      provider: api.provider
+      guard:
+        authenticators:
+          - hgpestana.user.authenticator.token
 
     dev:
       pattern: ^/(_(profiler|wdt)|css|images|js)/
