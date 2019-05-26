@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 /*
  * This file is part of hgpestana's user bundle.
@@ -16,7 +17,7 @@ use Doctrine\Common\Collections\Criteria;
 use Exception;
 use HGPestana\UserBundle\Entity\ApiToken;
 use HGPestana\UserBundle\Entity\User;
-use HGPestana\UserBundle\Repository\UserRepository;
+use HGPestana\UserBundle\Repository\RepositoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -34,22 +35,19 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
  *
  * @author Hélder Pestana <hgpestana@gmail.com>
  */
-class BasicAuthenticator extends AbstractGuardAuthenticator
+final class BasicAuthenticator extends AbstractGuardAuthenticator
 {
     private const INVALID_CREDENTIALS_ERROR = 'Invalid credentials supplied! Please try again.';
     private const API_KEY = 'api_key';
     private const MESSAGE_KEY = 'message';
 
-    /** @var UserRepository */
+    /** @var RepositoryInterface */
     private $userRepository;
 
     /** @var UserPasswordEncoderInterface */
     private $passwordEncoder;
 
-    /**
-     * {@inheritDoc}
-     */
-    public function __construct(UserRepository $userRepository, UserPasswordEncoderInterface $passwordEncoder)
+    public function __construct(RepositoryInterface $userRepository, UserPasswordEncoderInterface $passwordEncoder)
     {
         $this->userRepository = $userRepository;
         $this->passwordEncoder = $passwordEncoder;
@@ -128,7 +126,6 @@ class BasicAuthenticator extends AbstractGuardAuthenticator
             $token = $results->first();
 
         } else {
-
             /** @var ApiToken $token */
             $token = $this->generateValidPlatformToken($user);
         }
@@ -201,7 +198,7 @@ class BasicAuthenticator extends AbstractGuardAuthenticator
     /**
      * {@inheritDoc}
      */
-    public function start(Request $request, AuthenticationException $authException = null)
+    public function start(Request $request, AuthenticationException $authException = null): JsonResponse
     {
     }
 }

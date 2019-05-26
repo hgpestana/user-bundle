@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 /*
  * This file is part of hgpestana's user bundle.
@@ -12,7 +13,7 @@ namespace HGPestana\UserBundle\Security\Core\Authentication;
 use Exception;
 use HGPestana\UserBundle\Entity\ApiToken;
 use HGPestana\UserBundle\Entity\User;
-use HGPestana\UserBundle\Repository\ApiTokenRepository;
+use HGPestana\UserBundle\Repository\RepositoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -28,18 +29,15 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
  *
  * @author Hélder Pestana <hgpestana@gmail.com>
  */
-class ApiTokenAuthenticator extends AbstractGuardAuthenticator
+final class ApiTokenAuthenticator extends AbstractGuardAuthenticator
 {
     private const INVALID_CREDENTIALS_ERROR = 'Invalid credentials supplied! Please try again.';
     private const TOKEN_EXPIRED_ERROR = 'The provided token has expired!';
 
-    /** @var ApiTokenRepository */
+    /** @var RepositoryInterface */
     private $apiTokenRepository;
 
-    /**
-     * {@inheritDoc}
-     */
-    public function __construct(ApiTokenRepository $apiTokenRepository)
+    public function __construct(RepositoryInterface $apiTokenRepository)
     {
         $this->apiTokenRepository = $apiTokenRepository;
     }
@@ -47,14 +45,14 @@ class ApiTokenAuthenticator extends AbstractGuardAuthenticator
     /**
      * {@inheritDoc}
      */
-    public function start(Request $request, AuthenticationException $authException = null)
+    public function start(Request $request, AuthenticationException $authException = null): ?JsonResponse
     {
     }
 
     /**
      * {@inheritDoc}
      */
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey): ?JsonResponse
     {
     }
 
@@ -100,7 +98,7 @@ class ApiTokenAuthenticator extends AbstractGuardAuthenticator
     /**
      * {@inheritDoc}
      */
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): JsonResponse
     {
         return new JsonResponse([
             'message' => $exception->getMessageKey(),
