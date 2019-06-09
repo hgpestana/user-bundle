@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * This file is part of hgpestana's user bundle.
@@ -31,7 +31,7 @@ final class UserRepository extends ObjectRepository
      * @return User|null
      * @throws NonUniqueResultException
      */
-    public function findOneByToken(string $token): ?User
+    public function findOneByToken(string $token) : ?User
     {
         $queryBuilder = $this->createQueryBuilder('u')
             ->join('u.apiTokens', 'a')

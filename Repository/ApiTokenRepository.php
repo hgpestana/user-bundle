@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * This file is part of hgpestana's user bundle.
@@ -16,4 +16,5 @@ namespace HGPestana\UserBundle\Repository;
  * @author Hélder Pestana <hgpestana@gmail.com>
  */
 final class ApiTokenRepository extends ObjectRepository
-{}
+{
+}

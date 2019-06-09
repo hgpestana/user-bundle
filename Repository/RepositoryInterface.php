@@ -39,7 +39,7 @@ interface RepositoryInterface
      *
      * @return bool
      */
-    public function delete($object, bool $flush = true): bool;
+    public function delete($object, bool $flush = true) : bool;
 
     /**
      * Finds an object by its primary key / identifier.
@@ -55,7 +55,7 @@ interface RepositoryInterface
      *
      * @return object[] The objects.
      */
-    public function findAll(): array;
+    public function findAll() : array;
 
     /**
      * Finds objects by a set of criteria.
@@ -73,7 +73,7 @@ interface RepositoryInterface
      *
      * @throws UnexpectedValueException
      */
-    public function findBy(array $criteria, ?array $orderBy = null, $limit = null, $offset = null): array;
+    public function findBy(array $criteria, ?array $orderBy = null, $limit = null, $offset = null) : array;
 
     /**
      * Finds a single object by a set of criteria.
@@ -89,7 +89,7 @@ interface RepositoryInterface
      *
      * @return string
      */
-    public function getClassName(): string;
+    public function getClassName() : string;
 
     /**
      * Creates a new QueryBuilder instance that is prepopulated for this entity name.
@@ -99,5 +99,5 @@ interface RepositoryInterface
      *
      * @return QueryBuilder
      */
-    public function createQueryBuilder(string $alias, string $indexBy = null): QueryBuilder;
+    public function createQueryBuilder(string $alias, string $indexBy = null) : QueryBuilder;
 }

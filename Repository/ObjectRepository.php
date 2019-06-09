@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * This file is part of hgpestana's user bundle.
@@ -40,25 +40,25 @@ abstract class ObjectRepository implements RepositoryInterface
     /**
      * {@inheritDoc}
      */
-    public function save($apiToken, bool $flush = true): ApiToken
+    public function save($object, bool $flush = true)
     {
-        if (get_class($apiToken) !== $this->getClassName()) {
+        if ( get_class($object) !== $this->getClassName() ) {
             throw new InvalidArgumentException(
                 sprintf('This repository can only handle instances of %s!', $this->getClassName())
             );
         }
 
-        $this->entityManager->persist($apiToken);
-        if ($flush === true) {
+        $this->entityManager->persist($object);
+        if ( $flush === true ) {
             $this->entityManager->flush();
         }
-        return $apiToken;
+        return $object;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getClassName(): string
+    public function getClassName() : string
     {
         return $this->className;
     }
@@ -66,16 +66,16 @@ abstract class ObjectRepository implements RepositoryInterface
     /**
      * {@inheritDoc}
      */
-    public function delete($apiToken, bool $flush = true): bool
+    public function delete($object, bool $flush = true) : bool
     {
-        if (get_class($apiToken) !== $this->getClassName()) {
+        if ( get_class($object) !== $this->getClassName() ) {
             throw new InvalidArgumentException(
                 sprintf('This repository can only handle instances of %s!', $this->getClassName())
             );
         }
 
-        $this->entityManager->remove($apiToken);
-        if ($flush === true) {
+        $this->entityManager->remove($object);
+        if ( $flush === true ) {
             $this->entityManager->flush();
         }
         return true;
@@ -84,9 +84,8 @@ abstract class ObjectRepository implements RepositoryInterface
     /**
      * {@inheritDoc}
      */
-    public function find($id): ApiToken
+    public function find($id)
     {
-        /** @var ApiToken $object */
         $object = $this->entityManager
             ->getRepository($this->getClassName())
             ->find($id);
@@ -97,7 +96,7 @@ abstract class ObjectRepository implements RepositoryInterface
     /**
      * {@inheritDoc}
      */
-    public function findAll(): array
+    public function findAll() : array
     {
         return $this->findBy([]);
     }
@@ -105,7 +104,7 @@ abstract class ObjectRepository implements RepositoryInterface
     /**
      * {@inheritDoc}
      */
-    public function findBy(array $criteria, ?array $orderBy = null, $limit = null, $offset = null): array
+    public function findBy(array $criteria, ?array $orderBy = null, $limit = null, $offset = null) : array
     {
         return $this->entityManager
             ->getRepository($this->getClassName())
@@ -115,7 +114,7 @@ abstract class ObjectRepository implements RepositoryInterface
     /**
      * {@inheritDoc}
      */
-    public function createQueryBuilder(string $alias, string $indexBy = null): QueryBuilder
+    public function createQueryBuilder(string $alias, string $indexBy = null) : QueryBuilder
     {
         return $this->entityManager->createQueryBuilder()
             ->select($alias)
@@ -134,17 +133,17 @@ abstract class ObjectRepository implements RepositoryInterface
      */
     public function __call($method, $arguments)
     {
-        if (strpos($method, 'findBy') === 0) {
-            return $this->findBy([substr($method, 6) => $arguments[0]], ...array_slice($arguments, 1));
+        if ( strpos($method, 'findBy') === 0 ) {
+            return $this->findBy([ substr($method, 6) => $arguments[ 0 ] ], ...array_slice($arguments, 1));
         }
 
-        if (strpos($method, 'findOneBy') === 0) {
-            return $this->findOneBy([substr($method, 9) => $arguments[0]]);
+        if ( strpos($method, 'findOneBy') === 0 ) {
+            return $this->findOneBy([ substr($method, 9) => $arguments[ 0 ] ]);
         }
 
         $trace = debug_backtrace();
-        $file = $trace[0]['file'];
-        $line = $trace[0]['line'];
+        $file = $trace[ 0 ][ 'file' ];
+        $line = $trace[ 0 ][ 'line' ];
         throw new BadMethodCallException(
             sprintf('Call to undefined method %s::%s() in %s on line %s.',
                 __CLASS__,
@@ -157,7 +156,7 @@ abstract class ObjectRepository implements RepositoryInterface
     /**
      * {@inheritDoc}
      */
-    public function findOneBy(array $criteria): ApiToken
+    public function findOneBy(array $criteria)
     {
         /** @var ApiToken $object */
         $object = $this->entityManager
