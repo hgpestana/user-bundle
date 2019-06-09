@@ -8,11 +8,11 @@ services:
   hgpestana.user.repository.user:
     class: '%hgpestana.user.repository.user.class%'
     arguments:
-      - '@doctrine.orm.entity_manager.abstract'
+      - '@doctrine.orm.default_entity_manager'
       - '%hgpestana.user.entity.user.class%'
 
   hgpestana.user.repository.token:
     class: '%hgpestana.user.repository.token.class%'
     arguments:
-      - '@doctrine.orm.entity_manager.abstract'
+      - '@doctrine.orm.default_entity_manager'
       - '%hgpestana.user.entity.token.class%'

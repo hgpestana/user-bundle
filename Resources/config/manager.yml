@@ -1,0 +1,9 @@
+parameters:
+  hgpestana.user.manager.user.class: HGPestana\UserBundle\Manager\UserManager
+
+services:
+  hgpestana.user.manager.user:
+    class: '%hgpestana.user.manager.user.class%'
+    arguments:
+      - '@hgpestana.user.repository.user'
+      - '@hgpestana.user.helper.setter.basic'

@@ -1,0 +1,13 @@
+parameters:
+  hgpestana.user.helper.mapper.basic.class: HGPestana\UserBundle\Helper\Mapper\BasicKeyMapper
+  hgpestana.user.helper.setter.basic.class: HGPestana\UserBundle\Helper\Setter\BasicMappedSetter
+
+services:
+  hgpestana.user.helper.mapper.basic:
+    class: '%hgpestana.user.helper.mapper.basic.class%'
+
+  hgpestana.user.helper.setter.basic:
+    class: '%hgpestana.user.helper.setter.basic.class%'
+    arguments:
+      - '@jms_serializer.serializer'
+      - '@hgpestana.user.helper.mapper.basic'
