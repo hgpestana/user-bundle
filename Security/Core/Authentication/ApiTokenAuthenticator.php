@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * This file is part of hgpestana's user bundle.
@@ -45,21 +45,21 @@ final class ApiTokenAuthenticator extends AbstractGuardAuthenticator
     /**
      * {@inheritDoc}
      */
-    public function start(Request $request, AuthenticationException $authException = null): ?JsonResponse
+    public function start(Request $request, AuthenticationException $authException = null) : ?JsonResponse
     {
     }
 
     /**
      * {@inheritDoc}
      */
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey): ?JsonResponse
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey) : ?JsonResponse
     {
     }
 
     /**
      * {@inheritDoc}
      */
-    public function supports(Request $request): ?bool
+    public function supports(Request $request) : ?bool
     {
         // look for header "Authorization: Bearer <token>"
         return $request->headers->has('Authorization')
@@ -69,7 +69,7 @@ final class ApiTokenAuthenticator extends AbstractGuardAuthenticator
     /**
      * {@inheritDoc}
      */
-    public function getCredentials(Request $request): ?string
+    public function getCredentials(Request $request) : ?string
     {
         $authorizationHeader = $request->headers->get('Authorization');
         return substr($authorizationHeader, 7);
@@ -79,16 +79,16 @@ final class ApiTokenAuthenticator extends AbstractGuardAuthenticator
      * {@inheritDoc}
      * @throws Exception
      */
-    public function getUser($credentials, UserProviderInterface $userProvider): ?User
+    public function getUser($credentials, UserProviderInterface $userProvider) : ?User
     {
         /** @var ApiToken $token */
         $token = $this->apiTokenRepository->findOneByToken($credentials);
 
-        if (!$token) {
+        if ( !$token ) {
             throw new CustomUserMessageAuthenticationException(self::INVALID_CREDENTIALS_ERROR);
         }
 
-        if ($token->isExpired()) {
+        if ( $token->isExpired() ) {
             throw new CustomUserMessageAuthenticationException(self::TOKEN_EXPIRED_ERROR);
         }
 
@@ -98,7 +98,7 @@ final class ApiTokenAuthenticator extends AbstractGuardAuthenticator
     /**
      * {@inheritDoc}
      */
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): JsonResponse
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception) : JsonResponse
     {
         return new JsonResponse([
             'message' => $exception->getMessageKey(),
@@ -108,7 +108,7 @@ final class ApiTokenAuthenticator extends AbstractGuardAuthenticator
     /**
      * {@inheritDoc}
      */
-    public function checkCredentials($credentials, UserInterface $user): bool
+    public function checkCredentials($credentials, UserInterface $user) : bool
     {
         return true;
     }
@@ -116,7 +116,7 @@ final class ApiTokenAuthenticator extends AbstractGuardAuthenticator
     /**
      * {@inheritDoc}
      */
-    public function supportsRememberMe(): bool
+    public function supportsRememberMe() : bool
     {
         return false;
     }

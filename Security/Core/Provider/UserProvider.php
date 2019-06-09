@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * This file is part of hgpestana's user bundle.
@@ -37,7 +37,7 @@ final class UserProvider implements UserProviderInterface
     /**
      * {@inheritDoc}
      */
-    public function loadUserByUsername($username): User
+    public function loadUserByUsername($username) : User
     {
         return $this->fetchUser($username);
     }
@@ -50,10 +50,10 @@ final class UserProvider implements UserProviderInterface
      * @return User
      * @throws UsernameNotFoundException
      */
-    private function fetchUser(string $email): User
+    private function fetchUser(string $email) : User
     {
         $user = $this->repository->findOneByEmail($email);
-        if ($user === null) {
+        if ( $user === null ) {
             throw new UsernameNotFoundException(
                 sprintf('No user with the provided username "%s" could be found.', $email)
             );
@@ -64,9 +64,9 @@ final class UserProvider implements UserProviderInterface
     /**
      * {@inheritDoc}
      */
-    public function refreshUser(UserInterface $user): User
+    public function refreshUser(UserInterface $user) : User
     {
-        if (!$user instanceof User) {
+        if ( !$user instanceof User ) {
             throw new UnsupportedUserException(
                 sprintf('Instances of "%s" are not supported.', get_class($user))
             );
@@ -79,7 +79,7 @@ final class UserProvider implements UserProviderInterface
     /**
      * {@inheritDoc}
      */
-    public function supportsClass($class): bool
+    public function supportsClass($class) : bool
     {
         return User::class === $class;
     }

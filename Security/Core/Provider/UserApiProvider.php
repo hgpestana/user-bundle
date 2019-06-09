@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * This file is part of hgpestana's user bundle.
@@ -39,7 +39,7 @@ final class UserApiProvider implements UserProviderInterface
      * {@inheritDoc}
      * @throws NonUniqueResultException
      */
-    public function loadUserByUsername($apiToken): User
+    public function loadUserByUsername($apiToken) : User
     {
         return $this->fetchUser($apiToken);
     }
@@ -53,10 +53,10 @@ final class UserApiProvider implements UserProviderInterface
      * @throws UsernameNotFoundException
      * @throws NonUniqueResultException
      */
-    private function fetchUser(string $apiToken): User
+    private function fetchUser(string $apiToken) : User
     {
         $user = $this->repository->findOneByToken($apiToken);
-        if ($user === null) {
+        if ( $user === null ) {
             throw new UsernameNotFoundException(
                 sprintf('No user with the provided token "%s" could be found.', $apiToken)
             );
@@ -68,9 +68,9 @@ final class UserApiProvider implements UserProviderInterface
      * {@inheritDoc}
      * @throws NonUniqueResultException
      */
-    public function refreshUser(UserInterface $user): User
+    public function refreshUser(UserInterface $user) : User
     {
-        if (!$user instanceof User) {
+        if ( !$user instanceof User ) {
             throw new UnsupportedUserException(
                 sprintf('Instances of "%s" are not supported.', get_class($user))
             );
@@ -83,7 +83,7 @@ final class UserApiProvider implements UserProviderInterface
     /**
      * {@inheritDoc}
      */
-    public function supportsClass($class): bool
+    public function supportsClass($class) : bool
     {
         return User::class === $class;
     }

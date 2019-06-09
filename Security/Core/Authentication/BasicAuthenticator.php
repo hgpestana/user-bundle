@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * This file is part of hgpestana's user bundle.
@@ -56,7 +56,7 @@ final class BasicAuthenticator extends AbstractGuardAuthenticator
     /**
      * {@inheritDoc}
      */
-    public function supports(Request $request): bool
+    public function supports(Request $request) : bool
     {
         // look for header "Authorization: Basic <64bit encoded keypair>"
         return $request->headers->has('Authorization')
@@ -66,30 +66,30 @@ final class BasicAuthenticator extends AbstractGuardAuthenticator
     /**
      * {@inheritDoc}
      */
-    public function getCredentials(Request $request): ?array
+    public function getCredentials(Request $request) : ?array
     {
         $credentialsHeader = $request->headers->get('Authorization');
         $credentials = explode(':', base64_decode($credentialsHeader, 6));
 
-        if (count($credentials) !== 2) {
+        if ( count($credentials) !== 2 ) {
             throw new CustomUserMessageAuthenticationException(self::INVALID_CREDENTIALS_ERROR);
         }
 
         return [
-            'email' => $credentials[0],
-            'password' => $credentials[1],
+            'email' => $credentials[ 0 ],
+            'password' => $credentials[ 1 ],
         ];
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getUser($credentials, UserProviderInterface $userProvider): ?User
+    public function getUser($credentials, UserProviderInterface $userProvider) : ?User
     {
         /** @var User $user */
-        $user = $this->userRepository->findOneByEmail($credentials['email']);
+        $user = $this->userRepository->findOneByEmail($credentials[ 'email' ]);
 
-        if (!$user) {
+        if ( !$user ) {
             throw new CustomUserMessageAuthenticationException(self::INVALID_CREDENTIALS_ERROR);
         }
 
@@ -99,9 +99,9 @@ final class BasicAuthenticator extends AbstractGuardAuthenticator
     /**
      * {@inheritDoc}
      */
-    public function checkCredentials($credentials, UserInterface $user): bool
+    public function checkCredentials($credentials, UserInterface $user) : bool
     {
-        return $this->passwordEncoder->isPasswordValid($user, $credentials['password']);
+        return $this->passwordEncoder->isPasswordValid($user, $credentials[ 'password' ]);
     }
 
     /**
@@ -114,13 +114,13 @@ final class BasicAuthenticator extends AbstractGuardAuthenticator
      * @return JsonResponse
      * @throws Exception
      */
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey): JsonResponse
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey) : JsonResponse
     {
         /** @var User $user */
         $user = $token->getUser();
         $results = $this->getUserValidPlatformTokens($user);
 
-        if ($results !== null && $results->count() > 0) {
+        if ( $results !== null && $results->count() > 0 ) {
 
             /** @var ApiToken $token */
             $token = $results->first();
@@ -146,7 +146,7 @@ final class BasicAuthenticator extends AbstractGuardAuthenticator
      * @return ArrayCollection|null
      * @throws Exception
      */
-    private function getUserValidPlatformTokens(User $user): ?ArrayCollection
+    private function getUserValidPlatformTokens(User $user) : ?ArrayCollection
     {
         $criteria = Criteria::create()
             ->where(Criteria::expr()->eq('description', ApiToken::PLATFORM_KEY))
@@ -163,7 +163,7 @@ final class BasicAuthenticator extends AbstractGuardAuthenticator
      * @return ApiToken|null
      * @throws Exception
      */
-    private function generateValidPlatformToken(User $user): ?ApiToken
+    private function generateValidPlatformToken(User $user) : ?ApiToken
     {
         $token = new ApiToken($user, ApiToken::PLATFORM_KEY, true);
         $user->getApiTokens()->add($token);
@@ -180,7 +180,7 @@ final class BasicAuthenticator extends AbstractGuardAuthenticator
      *
      * @return JsonResponse
      */
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): JsonResponse
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception) : JsonResponse
     {
         return new JsonResponse([
             self::MESSAGE_KEY => $exception->getMessageKey(),
@@ -190,7 +190,7 @@ final class BasicAuthenticator extends AbstractGuardAuthenticator
     /**
      * {@inheritDoc}
      */
-    public function supportsRememberMe(): bool
+    public function supportsRememberMe() : bool
     {
         return false;
     }
@@ -198,7 +198,7 @@ final class BasicAuthenticator extends AbstractGuardAuthenticator
     /**
      * {@inheritDoc}
      */
-    public function start(Request $request, AuthenticationException $authException = null): JsonResponse
+    public function start(Request $request, AuthenticationException $authException = null) : JsonResponse
     {
     }
 }
