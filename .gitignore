@@ -49,3 +49,5 @@
 
 # .idea folder
 .idea/
+/Tests/Fixtures/app/cache/
+/Tests/Fixtures/app/logs/
