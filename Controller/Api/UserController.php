@@ -1,81 +1,85 @@
 <?php
 
 
-namespace HGPestana\UserBundle\Controller;
+namespace HGPestana\UserBundle\Controller\Api;
 
 
-use Exception;
+use FOS\RestBundle\Controller\AbstractFOSRestController;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Request\ParamFetcher;
+use HGPestana\UserBundle\Manager\UserManager;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Swagger\Annotations as SWG;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Validator\Constraints;
 
-class UserController
+class UserController extends AbstractFOSRestController
 {
 
+    /** @var UserManager */
+    private $entityManager;
+
     /**
-     * API endpoint for obtaining a paginated list of all projects and its galleries through GET request.
-     * Channel requesting the paginated list will only receive a list of the projects who chose to distribute with it.
+     * UserController constructor.
+     */
+    public function __construct()
+    {
+        $this->entityManager = $this->get('hgpestana.user.manager.user');
+    }
+
+    /**
+     * API endpoint for creating a new user in the bundle.
      *
-     *
-     * @Rest\QueryParam(name="offset", requirements="\d+", default="0", description="Pagination offset for the
-     *     requested list.", nullable=true)
-     * @Rest\QueryParam(name="limit", requirements="\d+", default="10", description="Total channels to retrieve per
-     *     request.", nullable=true)
-     * @Rest\QueryParam(name="project", nullable=true, description="Project identifier for which you need to retrieve
-     *     the existing galleries.")
      * @param ParamFetcher $paramFetcher
      *
-     * @return Response
-     * @throws HttpException
-     * @throws Exception
+     * @return  Response
      *
-     * @ApiDoc(
-     *  section="Distribution",
-     *  resource="/distribution/channels",
-     *  description="Gets a paginated list of projects and galleries that subscribed to the channel. Optionally, can
-     *     filter by a specific project ID.", headers={
-     *      {
-     *          "name"="vdroom-api-key",
-     *          "description"="vdroom-api-key:[Api Key]",
-     *          "required" = true
-     *      },
-     *      {
-     *          "name"="vdroom-api-secret",
-     *          "description"="vdroom-api-secret:[Api Secret]",
-     *          "required" = true
-     *      },
-     *      {
-     *          "name"="Content-Type",
-     *          "description"="application/json",
-     *          "required" = true
-     *      }
-     *  },
-     *  statusCodes={
-     *      200="Returned when the projects' list was obtained successfully",
-     *      401="Returned when the channel isn't authenticated.",
-     *  }
+     * @Rest\Route("/api/user/create", methods={"POST"})
+     *
+     * @Rest\RequestParam(name="email", requirements=@Constraints\Email, description="The user email.", nullable=false)
+     * @Rest\RequestParam(name="password", requirements=@Constraints\, description="The user password.", nullable=false)
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns the created user",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=User::class, groups={"full"}))
+     *     )
      * )
      */
-    public function userCreateAction(ParamFetcher $paramFetcher): Response
+    public function userCreateAction(ParamFetcher $paramFetcher) : Response
+    {
+        $user = $this->entityManager->create(
+            $paramFetcher->get('email'),
+            $paramFetcher->get('password')
+        );
+
+        $user = $this->entityManager->save($user);
+        $view = $this->view($user);
+
+        return $this->handleView($view);
+    }
+
+    public function userReadAction() : Response
+    {
+        $user = $this->getUser();
+        $view = $this->view($user);
+
+        return $this->handleView($view);
+    }
+
+    public function userUpdateAction(ParamFetcher $paramFetcher) : Response
     {
 
     }
 
-    public function userReadAction(): Response
+    public function userDeleteAction() : Response
     {
 
     }
 
-    public function userUpdateAction(ParamFetcher $paramFetcher): Response
-    {
-
-    }
-
-    public function userDeleteAction(): Response
-    {
-
-    }
-
-    public function userListAction(): Response
+    public function userListAction() : Response
     {
 
     }
