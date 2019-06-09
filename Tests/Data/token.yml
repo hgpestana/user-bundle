@@ -1,0 +1,21 @@
+HGPestana\UserBundle\Entity\ApiToken:
+  token{3..30, 3}:
+    token: '<md5()>'
+    description: 'PLATFORM'
+    expiresAt: '<dateTimeBetween("+365 days", "+100 days")>'
+    immutable: true
+    user: '@user<($this->valueForCurrent / 3)>'
+
+  token{33..60, 3}:
+    token: '<md5()>'
+    description: '<word()>'
+    expiresAt: '<dateTimeBetween("+365 days", "+100 days")>'
+    immutable: false
+    user: '@user<($this->valueForCurrent / 3 - 10)>'
+
+  token{63..90, 3}:
+    token: '<md5()>'
+    description: 'PLATFORM'
+    expiresAt: '<dateTimeBetween("-365 days", "-100 days")>'
+    immutable: true
+    user: '@user<($this->valueForCurrent / 3 - 10)>'

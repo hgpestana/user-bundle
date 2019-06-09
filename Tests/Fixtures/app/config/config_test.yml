@@ -1,23 +1,25 @@
 imports:
-- { resource: security.yml }
+  - { resource: security.yml }
+  - { resource: parameters.yml }
 
 framework:
+  secret: '%secret%'
+  form: ~
   csrf_protection: ~
-  secret: test
-  test: ~
   templating:
     engines: ['twig']
   session:
     handler_id: ~
     storage_id: session.storage.mock_file
-    name: MOCKSESSID
+    name: MOCKSESSION
   router:
     resource: '%kernel.root_dir%/config/routing.yml'
     strict_requirements: ~
   validation: { enable_annotations: true }
 
 liip_functional_test:
-  cache_sqlite_db: true
+  cache_db:
+    sqlite: liip_functional_test.services_database_backup.sqlite
 
 doctrine:
   dbal:
@@ -30,16 +32,6 @@ doctrine:
     auto_generate_proxy_classes: '%kernel.debug%'
     naming_strategy: doctrine.orm.naming_strategy.underscore
     auto_mapping: true
-
-fos_user:
-  db_driver: orm # other valid values are 'mongodb' and 'couchdb'
-  firewall_name: main
-  user_class: HGPestana\UserBundle\Entity\User
-  service:
-    mailer: 'fos_user.mailer.noop'
-  from_email:
-    address: "test@domain.com"
-    sender_name: "test@domain.com"
 
 fos_rest:
   param_fetcher_listener: true

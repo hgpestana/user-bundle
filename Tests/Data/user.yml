@@ -1,0 +1,18 @@
+HGPestana\UserBundle\Entity\User:
+  user{1..10}:
+    email: '<freeEmail()>'
+    emailCanonical: '@email'
+    enabled: true
+    locked: false
+    password: '<password()>'
+    lastLogin: '<dateTimeBetween("-15 days", "now")>'
+    confirmationToken: '<md5()>'
+
+  user{11..20}:
+    email: '<freeEmail()>'
+    emailCanonical: '@email'
+    enabled: true
+    locked: false
+    password: '<password()>'
+    lastLogin: '<dateTimeBetween("-15 days", "now")>'
+    confirmationToken: '<md5()>'
