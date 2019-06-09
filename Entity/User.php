@@ -80,7 +80,7 @@ final class User extends TimeProperties implements AdvancedUserInterface, Serial
 
     /**
      * @var string
-     * @ORM\Column(name="confirmation_token", type="string", length=60, unique=true)
+     * @ORM\Column(name="confirmation_token", type="string", length=32, unique=true)
      */
     private $confirmationToken;
 
@@ -95,18 +95,6 @@ final class User extends TimeProperties implements AdvancedUserInterface, Serial
      * @ORM\Column(name="salt", type="string", length=30, nullable=true)
      */
     private $salt;
-
-    /**
-     * @var DateTime
-     * @ORM\Column(name="created_at", type="datetime")
-     */
-    private $createdAt;
-
-    /**
-     * @var DateTime
-     * @ORM\Column(name="last_updated", type="datetime")
-     */
-    private $lastUpdated;
 
     /**
      * @var DateTime
@@ -126,8 +114,6 @@ final class User extends TimeProperties implements AdvancedUserInterface, Serial
      * @param string      $email
      * @param string      $password
      * @param string|null $salt
-     *
-     * @throws Exception
      */
     public function __construct(string $email, string $password, string $salt = null)
     {
@@ -137,7 +123,7 @@ final class User extends TimeProperties implements AdvancedUserInterface, Serial
         $this->enabled = false;
         $this->salt = $salt;
         $this->locked = false;
-        $this->confirmationToken = bin2hex(random_bytes(60));
+        $this->confirmationToken = md5(microtime());
     }
 
     /**

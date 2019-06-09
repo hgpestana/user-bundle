@@ -42,26 +42,7 @@ abstract class TimeProperties
     /**
      * @return DateTime
      */
-    public function getCreateDate(): DateTime
-    {
-        return $this->createDate;
-    }
-
-    /**
-     * @param DateTime $createDate
-     *
-     * @return TimeProperties
-     */
-    public function setCreateDate(DateTime $createDate): TimeProperties
-    {
-        $this->createDate = $createDate;
-        return $this;
-    }
-
-    /**
-     * @return DateTime
-     */
-    public function getUpdateDate(): DateTime
+    public function getUpdateDate() : DateTime
     {
         return $this->updateDate;
     }
@@ -71,7 +52,7 @@ abstract class TimeProperties
      *
      * @return TimeProperties
      */
-    public function setUpdateDate(DateTime $updateDate): TimeProperties
+    public function setUpdateDate(DateTime $updateDate) : TimeProperties
     {
         $this->updateDate = $updateDate;
         return $this;
@@ -83,12 +64,31 @@ abstract class TimeProperties
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
-    public function updateTimeProperties(): void
+    public function updateTimeProperties() : void
     {
         $now = new DateTime('now');
         $this->setUpdateDate($now);
-        if ($this->getCreateDate() == null) {
+        if ( $this->getCreateDate() == null ) {
             $this->setCreateDate($now);
         }
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getCreateDate() : DateTime
+    {
+        return $this->createDate;
+    }
+
+    /**
+     * @param DateTime $createDate
+     *
+     * @return TimeProperties
+     */
+    public function setCreateDate(DateTime $createDate) : TimeProperties
+    {
+        $this->createDate = $createDate;
+        return $this;
     }
 }

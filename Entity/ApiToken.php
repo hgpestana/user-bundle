@@ -89,7 +89,7 @@ final class ApiToken extends TimeProperties
      *
      * @return string|null
      */
-    public function getId(): ?string
+    public function getId() : ?string
     {
         return $this->id;
     }
@@ -99,7 +99,7 @@ final class ApiToken extends TimeProperties
      *
      * @return string
      */
-    public function getToken(): string
+    public function getToken() : string
     {
         return $this->token;
     }
@@ -109,7 +109,7 @@ final class ApiToken extends TimeProperties
      *
      * @return User
      */
-    public function getUser(): User
+    public function getUser() : User
     {
         return $this->user;
     }
@@ -119,7 +119,7 @@ final class ApiToken extends TimeProperties
      *
      * @return string
      */
-    public function getDescription(): string
+    public function getDescription() : string
     {
         return $this->description;
     }
@@ -131,9 +131,9 @@ final class ApiToken extends TimeProperties
      *
      * @return ApiToken
      */
-    public function setDescription(string $description): self
+    public function setDescription(string $description) : self
     {
-        if (!$this->immutable) {
+        if ( !$this->immutable ) {
             $this->description = $description;
         }
 
@@ -145,7 +145,7 @@ final class ApiToken extends TimeProperties
      *
      * @return bool
      */
-    public function getImmutable(): bool
+    public function getImmutable() : bool
     {
         return $this->immutable;
     }
@@ -156,7 +156,7 @@ final class ApiToken extends TimeProperties
      * @return ApiToken
      * @throws Exception
      */
-    public function invalidateKey(): self
+    public function invalidateKey() : self
     {
         $this->expiresAt = new DateTime('-1 year');
         return $this;
@@ -168,7 +168,7 @@ final class ApiToken extends TimeProperties
      * @return bool
      * @throws Exception
      */
-    public function isExpired(): bool
+    public function isExpired() : bool
     {
         return $this->getExpiresAt() <= new DateTime();
     }
@@ -178,7 +178,7 @@ final class ApiToken extends TimeProperties
      *
      * @return DateTime
      */
-    public function getExpiresAt(): DateTime
+    public function getExpiresAt() : DateTime
     {
         return $this->expiresAt;
     }
@@ -190,9 +190,9 @@ final class ApiToken extends TimeProperties
      *
      * @return ApiToken
      */
-    public function setExpiresAt(DateTime $expiresAt): self
+    public function setExpiresAt(DateTime $expiresAt) : self
     {
-        if (!$this->immutable) {
+        if ( !$this->immutable ) {
             $this->expiresAt = $expiresAt;
         }
 
